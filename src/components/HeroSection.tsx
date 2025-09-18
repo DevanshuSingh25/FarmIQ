@@ -50,7 +50,7 @@ export const HeroSection = ({
               {primaryAction.icon && <primaryAction.icon className="mr-2 h-5 w-5" />}
               {primaryAction.text}
             </Button>
-            <Button variant="outline" size="lg" className="text-lg px-8 py-6 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10">
+            <Button variant="outline" size="lg" className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-soft hover:shadow-medium h-11 rounded-md text-lg px-8 py-6">
               {secondaryAction.icon && <secondaryAction.icon className="mr-2 h-5 w-5" />}
               {secondaryAction.text}
             </Button>
