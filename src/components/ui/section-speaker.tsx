@@ -3,6 +3,7 @@ import { Volume2, VolumeX, Pause, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { getCurrentLanguage } from "@/lib/translations";
 
 // Singleton audio manager
 class AudioManager {
@@ -215,6 +216,15 @@ export const SectionSpeaker = ({
     }
 
     debounceTimer.current = setTimeout(async () => {
+      const currentLang = getCurrentLanguage();
+      if (currentLang === 'Hindi' || currentLang === 'Punjabi') {
+        toast({
+          title: "Not available",
+          description: "",
+          variant: "destructive"
+        });
+        return;
+      }
       const manager = audioManager.current;
       const isCurrentSection = manager.isCurrentSection(sectionId);
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { MessageCircle, X, Send } from "lucide-react";
+import { MessageCircle, X, Send, Mic } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 export function ChatbotWidget() {
@@ -59,6 +59,9 @@ export function ChatbotWidget() {
                 />
                 <Button size="sm" className="px-3">
                   <Send className="h-4 w-4" />
+                </Button>
+                <Button size="sm" variant="outline" className="px-3" title="Voice input (coming soon)">
+                  <Mic className="h-4 w-4" />
                 </Button>
               </div>
             </div>

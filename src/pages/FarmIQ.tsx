@@ -23,10 +23,10 @@ export default function FarmIQ() {
         onLanguageChange={setLanguage}
       />
       
-      <main className="pt-16 pb-4 px-4">
+      <main className="pt-20 pb-4 px-4">
         <div className="container mx-auto max-w-6xl">
           {/* Weather Card */}
-          <div className="mb-8 relative">
+          <div className="mb-12 relative">
             <div className="absolute top-2 right-2 z-10">
               <SectionSpeaker 
                 getText={() => "Today's weather is 18 degrees celsius with cloudy conditions. Humidity is good at 65%, soil moisture is low at 35%, and there's light precipitation expected."}
