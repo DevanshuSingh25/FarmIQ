@@ -1,5 +1,6 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { setLanguage as setGoogleLanguage } from "@/lib/googleTranslate";
+import { getTranslation, getCurrentLanguage } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -17,7 +18,8 @@ import {
   UserCircle,
   History,
   Info,
-  LogOut 
+  LogOut,
+  QrCode
 } from "lucide-react";
 
 interface FarmIQNavbarProps {
@@ -30,6 +32,7 @@ interface FarmIQNavbarProps {
 export function FarmIQNavbar({ theme, language, onThemeToggle, onLanguageChange }: FarmIQNavbarProps) {
   const [activeLink, setActiveLink] = useState<string>('');
   const navigate = useNavigate();
+  const [currentLanguage, setCurrentLanguage] = useState<'English' | 'Hindi' | 'Punjabi'>(language);
 
   const navLinks = [
     { label: 'Soil', href: '/soil-analysis' },
@@ -39,6 +42,11 @@ export function FarmIQNavbar({ theme, language, onThemeToggle, onLanguageChange 
   ];
 
   const languages = ['English', 'Hindi', 'Punjabi'] as const;
+
+  // Update current language when language prop changes
+  React.useEffect(() => {
+    setCurrentLanguage(language);
+  }, [language]);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border shadow-soft">
@@ -104,6 +112,24 @@ export function FarmIQNavbar({ theme, language, onThemeToggle, onLanguageChange 
                 <Sun className="h-4 w-4" />
               }
             </Button>
+
+            {/* QR Menu */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="h-9 w-9 p-0" aria-label="QR menu">
+                  <QrCode className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="bg-popover border border-border shadow-medium">
+                <DropdownMenuItem 
+                  className="cursor-pointer hover:bg-muted"
+                  onClick={() => navigate('/farmer/qr/generate')}
+                  role="menuitem"
+                >
+                  {getTranslation('qr.menu.generate', currentLanguage)}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             {/* Profile Menu */}
             <DropdownMenu>
