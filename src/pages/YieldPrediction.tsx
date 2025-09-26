@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, TrendingUp, BarChart3 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts";
+import { SectionSpeaker } from "@/components/ui/section-speaker";
 
 const YieldPrediction = () => {
   const navigate = useNavigate();
+
+  // Form state
   const [formData, setFormData] = useState({
     cropName: "",
     costPrice: "",
@@ -16,52 +19,59 @@ const YieldPrediction = () => {
   });
   const [showResults, setShowResults] = useState(false);
 
-  // Mock data for charts
-  const yieldData = [
-    { month: 'Jan', yield: 2.4, prediction: 2.6 },
-    { month: 'Feb', yield: 2.8, prediction: 3.1 },
-    { month: 'Mar', yield: 3.2, prediction: 3.4 },
-    { month: 'Apr', yield: 4.1, prediction: 4.3 },
-    { month: 'May', yield: 4.8, prediction: 5.1 },
-    { month: 'Jun', yield: 5.2, prediction: 5.5 },
-    { month: 'Jul', yield: 5.8, prediction: 6.2 },
-    { month: 'Aug', yield: 6.1, prediction: 6.5 },
-    { month: 'Sep', yield: 5.9, prediction: 6.3 },
-    { month: 'Oct', yield: 5.4, prediction: 5.8 },
-    { month: 'Nov', yield: 4.2, prediction: 4.6 },
-    { month: 'Dec', yield: 3.5, prediction: 3.8 }
-  ];
+  // Supported crops and mock monthly yield data (past year)
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const cropToMonthlyYield: Record<string, number[]> = {
+    rice:  [2.2, 2.5, 2.8, 3.0, 3.1, 2.9, 2.6, 2.4, 2.3, 2.1, 1.9, 1.8],
+    wheat: [1.1, 1.3, 1.7, 2.0, 2.2, 2.1, 1.8, 1.6, 1.4, 1.2, 1.0, 0.9],
+    tomato:[0.8, 1.0, 1.2, 1.6, 1.9, 2.1, 2.3, 2.0, 1.7, 1.3, 1.0, 0.8],
+    corn:  [1.3, 1.5, 1.8, 2.2, 2.5, 2.7, 2.6, 2.4, 2.2, 1.9, 1.6, 1.4]
+  };
 
-  const profitData = [
-    { month: 'Jan', profit: 15000, cost: 12000 },
-    { month: 'Feb', profit: 18000, cost: 14000 },
-    { month: 'Mar', profit: 22000, cost: 16000 },
-    { month: 'Apr', profit: 28000, cost: 18000 },
-    { month: 'May', profit: 32000, cost: 20000 },
-    { month: 'Jun', profit: 35000, cost: 22000 },
-    { month: 'Jul', profit: 38000, cost: 24000 },
-    { month: 'Aug', profit: 36000, cost: 23000 },
-    { month: 'Sep', profit: 33000, cost: 21000 },
-    { month: 'Oct', profit: 29000, cost: 19000 },
-    { month: 'Nov', profit: 24000, cost: 17000 },
-    { month: 'Dec', profit: 20000, cost: 15000 }
-  ];
+  const normalizeCropKey = (name: string) => name.trim().toLowerCase();
+  const getCropKey = (name: string) => {
+    const key = normalizeCropKey(name);
+    if (cropToMonthlyYield[key]) return key;
+    // Simple mapping for common variants
+    if (key.includes('paddy')) return 'rice';
+    if (key.includes('maize')) return 'corn';
+    return 'rice';
+  };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const buildYieldSeries = (cropName: string) => {
+    const key = getCropKey(cropName);
+    const yields = cropToMonthlyYield[key] || cropToMonthlyYield.rice;
+    return months.map((m, i) => ({ month: m, yield: yields[i] }));
+  };
+
+  const buildProfitSeries = (cropName: string, costPrice: number, sellingPrice: number) => {
+    const key = getCropKey(cropName);
+    const yields = cropToMonthlyYield[key] || cropToMonthlyYield.rice;
+    const unitMargin = Math.max(0, sellingPrice - costPrice);
+    return months.map((m, i) => ({ month: m, profit: Math.round(unitMargin * yields[i] * 100) }));
+  };
+
+  const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.cropName && formData.costPrice && formData.sellingPrice) {
-      setShowResults(true);
-    }
+    if (!formData.cropName.trim()) return;
+    if (!formData.costPrice || !formData.sellingPrice) return;
+    setShowResults(true);
   };
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
+  const getText = () => "Crop history analytics. Enter crop name, cost price and selling price to view yield and profit trends over the past year for your crop category.";
 
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex items-center gap-4 mb-8 relative group">
+          <div className="absolute top-0 right-0 z-10">
+            <SectionSpeaker 
+              getText={getText}
+              sectionId="crop-history-page"
+              ariaLabel="Read crop history page information"
+              alwaysVisible
+            />
+          </div>
           <Button 
             variant="ghost" 
             size="sm" 
@@ -75,9 +85,9 @@ const YieldPrediction = () => {
 
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-8">
-            <h1 className="text-3xl lg:text-4xl font-bold mb-4">Yield Prediction</h1>
+            <h1 className="text-3xl lg:text-4xl font-bold mb-4">Crop History</h1>
             <p className="text-xl text-muted-foreground">
-              Get AI-powered predictions for your crop yields and profit trends
+              Enter your crop and prices to view yield and profit trends over the past year
             </p>
           </div>
 
@@ -86,100 +96,70 @@ const YieldPrediction = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5" />
-                  Crop Information
+                  Basic Questionnaire
                 </CardTitle>
                 <CardDescription>
-                  Tell us about your crop to generate accurate predictions
+                  Provide crop name, cost price and selling price
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={onSubmit} className="space-y-6">
                   <div className="space-y-2">
-                    <Label htmlFor="cropName">Crop Name</Label>
+                    <Label htmlFor="cropName">Crop name</Label>
                     <Input
                       id="cropName"
-                      placeholder="e.g., Rice, Wheat, Tomato"
+                      placeholder="e.g., Rice, Wheat, Tomato, Corn"
                       value={formData.cropName}
-                      onChange={(e) => handleInputChange("cropName", e.target.value)}
+                      onChange={(e) => setFormData({ ...formData, cropName: e.target.value })}
                       required
                     />
                   </div>
-                  
                   <div className="space-y-2">
-                    <Label htmlFor="costPrice">Cost Price per Quintal (₹)</Label>
+                    <Label htmlFor="costPrice">Cost price (per unit)</Label>
                     <Input
                       id="costPrice"
                       type="number"
+                      step="0.01"
                       placeholder="e.g., 1500"
                       value={formData.costPrice}
-                      onChange={(e) => handleInputChange("costPrice", e.target.value)}
+                      onChange={(e) => setFormData({ ...formData, costPrice: e.target.value })}
                       required
                     />
                   </div>
-
                   <div className="space-y-2">
-                    <Label htmlFor="sellingPrice">Expected Selling Price per Quintal (₹)</Label>
+                    <Label htmlFor="sellingPrice">Selling price (per unit)</Label>
                     <Input
                       id="sellingPrice"
                       type="number"
+                      step="0.01"
                       placeholder="e.g., 2000"
                       value={formData.sellingPrice}
-                      onChange={(e) => handleInputChange("sellingPrice", e.target.value)}
+                      onChange={(e) => setFormData({ ...formData, sellingPrice: e.target.value })}
                       required
                     />
                   </div>
-
                   <Button type="submit" className="w-full" size="lg">
-                    Generate Predictions
+                    View Crop Trends
                   </Button>
                 </form>
               </CardContent>
             </Card>
           ) : (
             <div className="space-y-8">
-              <div className="grid md:grid-cols-3 gap-6 mb-8">
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="text-center">
-                      <h3 className="font-semibold text-lg">Crop</h3>
-                      <p className="text-2xl font-bold text-primary mt-2">{formData.cropName}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="text-center">
-                      <h3 className="font-semibold text-lg">Expected Profit Margin</h3>
-                      <p className="text-2xl font-bold text-success mt-2">
-                        {Math.round(((parseFloat(formData.sellingPrice) - parseFloat(formData.costPrice)) / parseFloat(formData.costPrice)) * 100)}%
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="text-center">
-                      <h3 className="font-semibold text-lg">Predicted Annual Yield</h3>
-                      <p className="text-2xl font-bold text-accent mt-2">5.2 Tons/Acre</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              <div className="grid lg:grid-cols-2 gap-8">
+              <div className="grid md:grid-cols-2 gap-8">
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <TrendingUp className="h-5 w-5" />
-                      Yield Over Time
+                      Yield over past year — {formData.cropName}
                     </CardTitle>
                     <CardDescription>
-                      Monthly yield predictions based on historical data and weather patterns
+                      Monthly yields for the selected crop category
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <ResponsiveContainer width="100%" height={300}>
-                      <LineChart data={yieldData}>
+                      <LineChart data={buildYieldSeries(formData.cropName)}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="month" />
                         <YAxis />
@@ -189,15 +169,7 @@ const YieldPrediction = () => {
                           dataKey="yield" 
                           stroke="hsl(var(--primary))" 
                           strokeWidth={2}
-                          name="Actual Yield (Tons)"
-                        />
-                        <Line 
-                          type="monotone" 
-                          dataKey="prediction" 
-                          stroke="hsl(var(--accent))" 
-                          strokeWidth={2}
-                          strokeDasharray="5 5"
-                          name="Predicted Yield (Tons)"
+                          name="Yield"
                         />
                       </LineChart>
                     </ResponsiveContainer>
@@ -208,15 +180,15 @@ const YieldPrediction = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <BarChart3 className="h-5 w-5" />
-                      Profit Trends
+                      Profit over past year — {formData.cropName}
                     </CardTitle>
                     <CardDescription>
-                      Monthly profit analysis based on market prices and production costs
+                      Computed from your cost and selling price
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <ResponsiveContainer width="100%" height={300}>
-                      <BarChart data={profitData}>
+                      <BarChart data={buildProfitSeries(formData.cropName, parseFloat(formData.costPrice), parseFloat(formData.sellingPrice))}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="month" />
                         <YAxis />
@@ -224,12 +196,7 @@ const YieldPrediction = () => {
                         <Bar 
                           dataKey="profit" 
                           fill="hsl(var(--success))" 
-                          name="Profit (₹)"
-                        />
-                        <Bar 
-                          dataKey="cost" 
-                          fill="hsl(var(--warning))" 
-                          name="Cost (₹)"
+                          name="Profit"
                         />
                       </BarChart>
                     </ResponsiveContainer>
@@ -238,15 +205,11 @@ const YieldPrediction = () => {
               </div>
 
               <div className="text-center">
-                <Button 
-                  variant="outline" 
-                  onClick={() => setShowResults(false)}
-                  className="mr-4"
-                >
-                  Modify Inputs
+                <Button variant="outline" className="mr-4" onClick={() => setShowResults(false)}>
+                  Modify answers
                 </Button>
                 <Button>
-                  Download Report
+                  Download report
                 </Button>
               </div>
             </div>
