@@ -19,9 +19,7 @@ export function ActionButtons() {
       title: 'Soil analysis',
       description: 'Test soil health and get recommendations',
       icon: Beaker,
-      color: 'from-green-400 to-green-600',
-      bgColor: 'bg-green-50',
-      borderColor: 'border-green-200',
+      color: 'success',
       route: '/soil-analysis'
     },
     {
@@ -29,9 +27,7 @@ export function ActionButtons() {
       title: 'Crop disease',
       description: 'Detect and prevent crop diseases',
       icon: Stethoscope,
-      color: 'from-red-400 to-red-600',
-      bgColor: 'bg-red-50',
-      borderColor: 'border-red-200',
+      color: 'destructive',
       route: '/farmer/crop-disease'
     },
     {
@@ -39,9 +35,7 @@ export function ActionButtons() {
       title: 'Market data',
       description: 'Get latest market prices and trends',
       icon: TrendingUp,
-      color: 'from-blue-400 to-blue-600',
-      bgColor: 'bg-blue-50',
-      borderColor: 'border-blue-200',
+      color: 'primary',
       route: '/market-prices'
     },
     {
@@ -49,9 +43,7 @@ export function ActionButtons() {
       title: 'NGO scheme',
       description: 'Access government schemes and support',
       icon: HandHeart,
-      color: 'from-purple-400 to-purple-600',
-      bgColor: 'bg-purple-50',
-      borderColor: 'border-purple-200',
+      color: 'accent',
       route: '/farmer/ngo-schemes'
     }
   ];
@@ -61,10 +53,52 @@ export function ActionButtons() {
       {actions.map((action) => {
         const IconComponent = action.icon;
         
+        const getColorClasses = (color: string) => {
+          switch (color) {
+            case 'success':
+              return {
+                bg: 'bg-success/10 dark:bg-success/20',
+                border: 'border-success/20 dark:border-success/30',
+                gradient: 'from-success to-success/80',
+                icon: 'text-success'
+              };
+            case 'destructive':
+              return {
+                bg: 'bg-destructive/10 dark:bg-destructive/20',
+                border: 'border-destructive/20 dark:border-destructive/30',
+                gradient: 'from-destructive to-destructive/80',
+                icon: 'text-destructive'
+              };
+            case 'primary':
+              return {
+                bg: 'bg-primary/10 dark:bg-primary/20',
+                border: 'border-primary/20 dark:border-primary/30',
+                gradient: 'from-primary to-primary/80',
+                icon: 'text-primary'
+              };
+            case 'accent':
+              return {
+                bg: 'bg-accent/10 dark:bg-accent/20',
+                border: 'border-accent/20 dark:border-accent/30',
+                gradient: 'from-accent to-accent/80',
+                icon: 'text-accent'
+              };
+            default:
+              return {
+                bg: 'bg-muted',
+                border: 'border-border',
+                gradient: 'from-muted to-muted/80',
+                icon: 'text-muted-foreground'
+              };
+          }
+        };
+
+        const colorClasses = getColorClasses(action.color);
+
         return (
           <Card 
             key={action.id}
-            className={`${action.bgColor} ${action.borderColor} border-2 hover:shadow-strong hover:scale-105 transition-all duration-300 cursor-pointer group overflow-hidden`}
+            className={`${colorClasses.bg} ${colorClasses.border} border-2 hover:shadow-strong hover:scale-105 transition-all duration-300 cursor-pointer group overflow-hidden`}
             onClick={() => navigate(action.route)}
           >
             <CardContent className="p-6 relative group">
@@ -78,7 +112,7 @@ export function ActionButtons() {
               </div>
               
               <div className="flex flex-col items-center text-center space-y-4">
-                <div className={`p-4 rounded-full bg-gradient-to-br ${action.color} shadow-medium group-hover:shadow-strong transition-all`}>
+                <div className={`p-4 rounded-full bg-gradient-to-br ${colorClasses.gradient} shadow-medium group-hover:shadow-strong transition-all`}>
                   <IconComponent className="h-8 w-8 text-white" />
                 </div>
                 
