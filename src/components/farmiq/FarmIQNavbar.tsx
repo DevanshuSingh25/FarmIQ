@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { setLanguage as setGoogleLanguage } from "@/lib/googleTranslate";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -81,7 +82,7 @@ export function FarmIQNavbar({ theme, language, onThemeToggle, onLanguageChange 
                 {languages.map((lang) => (
                   <DropdownMenuItem
                     key={lang}
-                    onClick={() => onLanguageChange(lang)}
+                    onClick={() => { onLanguageChange(lang); setGoogleLanguage(lang); }}
                     className="cursor-pointer hover:bg-muted"
                   >
                     {lang}
