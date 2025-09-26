@@ -16,6 +16,7 @@ import Teaching from "./pages/Teaching";
 import YieldPrediction from "./pages/YieldPrediction";
 import FarmIQ from "./pages/FarmIQ";
 import QRGeneration from "./pages/QRGeneration";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,6 +42,7 @@ const App = () => (
           <Route path="/market-prices" element={<MarketPrices />} />
           <Route path="/yield-prediction" element={<YieldPrediction />} />
           <Route path="/farmer/qr/generate" element={<QRGeneration />} />
+          <Route path="/profile" element={<Profile />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

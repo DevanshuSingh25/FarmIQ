@@ -15,7 +15,8 @@ const YieldPrediction = () => {
   const [formData, setFormData] = useState({
     cropName: "",
     costPrice: "",
-    sellingPrice: ""
+    sellingPrice: "",
+    kgProduced: ""
   });
   const [showResults, setShowResults] = useState(false);
 
@@ -38,23 +39,27 @@ const YieldPrediction = () => {
     return 'rice';
   };
 
-  const buildYieldSeries = (cropName: string) => {
+  const buildYieldSeries = (cropName: string, kgProduced: number) => {
     const key = getCropKey(cropName);
     const yields = cropToMonthlyYield[key] || cropToMonthlyYield.rice;
-    return months.map((m, i) => ({ month: m, yield: yields[i] }));
+    // Scale the mock data based on user's actual production
+    const scaleFactor = kgProduced > 0 ? kgProduced / 1000 : 1; // Convert kg to tons and scale
+    return months.map((m, i) => ({ month: m, yield: Math.round(yields[i] * scaleFactor * 100) / 100 }));
   };
 
-  const buildProfitSeries = (cropName: string, costPrice: number, sellingPrice: number) => {
+  const buildProfitSeries = (cropName: string, costPrice: number, sellingPrice: number, kgProduced: number) => {
     const key = getCropKey(cropName);
     const yields = cropToMonthlyYield[key] || cropToMonthlyYield.rice;
     const unitMargin = Math.max(0, sellingPrice - costPrice);
-    return months.map((m, i) => ({ month: m, profit: Math.round(unitMargin * yields[i] * 100) }));
+    // Scale the mock data based on user's actual production
+    const scaleFactor = kgProduced > 0 ? kgProduced / 1000 : 1; // Convert kg to tons and scale
+    return months.map((m, i) => ({ month: m, profit: Math.round(unitMargin * yields[i] * scaleFactor * 100) }));
   };
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.cropName.trim()) return;
-    if (!formData.costPrice || !formData.sellingPrice) return;
+    if (!formData.costPrice || !formData.sellingPrice || !formData.kgProduced) return;
     setShowResults(true);
   };
 
@@ -99,7 +104,7 @@ const YieldPrediction = () => {
                   Basic Questionnaire
                 </CardTitle>
                 <CardDescription>
-                  Provide crop name, cost price and selling price
+                  Provide crop name, cost price, selling price and production quantity
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -138,6 +143,19 @@ const YieldPrediction = () => {
                       required
                     />
                   </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="kgProduced">Crop produced (kg)</Label>
+                    <Input
+                      id="kgProduced"
+                      type="number"
+                      min="0"
+                      step="0.1"
+                      placeholder="e.g., 2500"
+                      value={formData.kgProduced}
+                      onChange={(e) => setFormData({ ...formData, kgProduced: e.target.value })}
+                      required
+                    />
+                  </div>
                   <Button type="submit" className="w-full" size="lg">
                     View Crop Trends
                   </Button>
@@ -159,7 +177,7 @@ const YieldPrediction = () => {
                   </CardHeader>
                   <CardContent>
                     <ResponsiveContainer width="100%" height={300}>
-                      <LineChart data={buildYieldSeries(formData.cropName)}>
+                      <LineChart data={buildYieldSeries(formData.cropName, parseFloat(formData.kgProduced))}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="month" />
                         <YAxis />
@@ -169,7 +187,7 @@ const YieldPrediction = () => {
                           dataKey="yield" 
                           stroke="hsl(var(--primary))" 
                           strokeWidth={2}
-                          name="Yield"
+                          name="Yield (tons)"
                         />
                       </LineChart>
                     </ResponsiveContainer>
@@ -188,7 +206,7 @@ const YieldPrediction = () => {
                   </CardHeader>
                   <CardContent>
                     <ResponsiveContainer width="100%" height={300}>
-                      <BarChart data={buildProfitSeries(formData.cropName, parseFloat(formData.costPrice), parseFloat(formData.sellingPrice))}>
+                      <BarChart data={buildProfitSeries(formData.cropName, parseFloat(formData.costPrice), parseFloat(formData.sellingPrice), parseFloat(formData.kgProduced))}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="month" />
                         <YAxis />
@@ -196,7 +214,7 @@ const YieldPrediction = () => {
                         <Bar 
                           dataKey="profit" 
                           fill="hsl(var(--success))" 
-                          name="Profit"
+                          name="Profit (₹)"
                         />
                       </BarChart>
                     </ResponsiveContainer>

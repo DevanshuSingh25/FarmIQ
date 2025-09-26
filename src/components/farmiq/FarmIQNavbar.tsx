@@ -139,7 +139,10 @@ export function FarmIQNavbar({ theme, language, onThemeToggle, onLanguageChange 
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48 bg-popover border border-border shadow-medium">
-                <DropdownMenuItem className="cursor-pointer hover:bg-muted py-3">
+                <DropdownMenuItem 
+                  className="cursor-pointer hover:bg-muted py-3"
+                  onClick={() => navigate('/profile')}
+                >
                   <UserCircle className="mr-3 h-4 w-4" />
                   Profile
                 </DropdownMenuItem>
