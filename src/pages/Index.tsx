@@ -346,57 +346,53 @@ const Index = () => {
         </div>
       </section>
 
-      {/* About Us Section */}
-      <section className="py-20 bg-muted/30 group relative">
-        <div className="absolute top-4 right-4 z-10">
-          <SectionSpeaker 
-            getText={() => "About Us: We are dedicated to empowering farmers with AI-powered agricultural solutions. Our mission is to help small and marginal farmers increase yields, reduce costs, and make informed farming decisions using cutting-edge technology. Contact us for support, partnerships, or to learn more about our services."}
-            sectionId="about-us-section"
-            ariaLabel="Read about us section"
-            alwaysVisible
-          />
-        </div>
+      {/* Dashboard Widgets + Recent Activities */}
+      <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
-            <div>
-              <h2 className="text-2xl lg:text-3xl font-bold mb-4 text-foreground">
-                About Our Mission
-              </h2>
-              <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto mb-6">
-                We are dedicated to empowering farmers with AI-powered agricultural solutions. 
-                Our mission is to help small and marginal farmers increase yields, reduce costs, 
-                and make informed farming decisions using cutting-edge technology.
-              </p>
+          <div className="grid lg:grid-cols-3 gap-6">
+            {/* This Month's Yield */}
+            <div className="bg-background border border-border rounded-xl p-6 shadow-medium">
+              <h3 className="text-sm font-medium text-muted-foreground">This Month's Yield</h3>
+              <div className="mt-3 text-3xl font-bold text-foreground">2.5 tons</div>
+              <p className="text-xs text-muted-foreground mt-1">+15% from last month</p>
             </div>
-            
-            <div className="grid md:grid-cols-3 gap-8 text-center">
-              <div>
-                <h3 className="font-semibold text-foreground mb-2">Our Vision</h3>
-                <p className="text-sm text-muted-foreground">
-                  Transforming agriculture through accessible technology and data-driven insights for sustainable farming.
-                </p>
-              </div>
-              <div>
-                <h3 className="font-semibold text-foreground mb-2">Contact Us</h3>
-                <p className="text-sm text-muted-foreground">
-                  support@farmiq.app<br />
-                  +91-9876543210<br />
-                  24/7 farmer helpline
-                </p>
-              </div>
-              <div>
-                <h3 className="font-semibold text-foreground mb-2">Our Impact</h3>
-                <p className="text-sm text-muted-foreground">
-                  Helping thousands of farmers across India with multilingual support and expert guidance.
-                </p>
-              </div>
+
+            {/* Revenue */}
+            <div className="bg-background border border-border rounded-xl p-6 shadow-medium">
+              <h3 className="text-sm font-medium text-muted-foreground">Revenue</h3>
+              <div className="mt-3 text-3xl font-bold text-foreground">₹1,25,000</div>
+              <p className="text-xs text-muted-foreground mt-1">+8% from last month</p>
             </div>
-            
-            <div className="pt-8 border-t border-border">
-              <p className="text-sm text-muted-foreground">
-                © 2024 Smart Crop Advisory System. All rights reserved. Built for farmers, by farmers.
-              </p>
+
+            {/* Active Crops */}
+            <div className="bg-background border border-border rounded-xl p-6 shadow-medium">
+              <h3 className="text-sm font-medium text-muted-foreground">Active Crops</h3>
+              <div className="mt-3 text-3xl font-bold text-foreground">5</div>
+              <p className="text-xs text-muted-foreground mt-1">Rice, Wheat, Corn, Tomato, Onion</p>
             </div>
+          </div>
+
+          {/* Recent Activities */}
+          <div className="mt-8 bg-background border border-border rounded-xl p-6 shadow-medium">
+            <h3 className="text-lg font-semibold mb-4">Recent Activities</h3>
+            <ul className="divide-y divide-border">
+              <li className="py-3 flex items-center justify-between">
+                <span className="text-sm">Soil test completed</span>
+                <span className="text-xs text-muted-foreground">2 hours ago</span>
+              </li>
+              <li className="py-3 flex items-center justify-between">
+                <span className="text-sm">Weather alert received</span>
+                <span className="text-xs text-muted-foreground">4 hours ago</span>
+              </li>
+              <li className="py-3 flex items-center justify-between">
+                <span className="text-sm">Disease scan performed</span>
+                <span className="text-xs text-muted-foreground">1 day ago</span>
+              </li>
+              <li className="py-3 flex items-center justify-between">
+                <span className="text-sm">Market price updated</span>
+                <span className="text-xs text-muted-foreground">2 days ago</span>
+              </li>
+            </ul>
           </div>
         </div>
       </section>

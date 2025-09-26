@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ChatbotWidget } from "@/components/ChatbotWidget";
+import { BurgerMenu } from "@/components/BurgerMenu";
 import { setupMockTTSAPI } from "@/utils/mockTTSApi";
 import Index from "./pages/Index";
 import SoilAnalysis from "./pages/SoilAnalysis";
@@ -30,6 +31,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<FarmIQ />} />
           <Route path="/old-homepage" element={<Index />} />
+          <Route path="/iot" element={<div className="container mx-auto p-6">IoT page coming soon</div>} />
           <Route path="/soil-analysis" element={<SoilAnalysis />} />
           <Route path="/farmer/crop-disease" element={<CropDiseaseDetection />} />
           <Route path="/farmer/weather" element={<Weather />} />
@@ -40,6 +42,7 @@ const App = () => (
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <BurgerMenu />
         <ChatbotWidget />
       </BrowserRouter>
     </TooltipProvider>
