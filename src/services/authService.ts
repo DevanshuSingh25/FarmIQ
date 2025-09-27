@@ -1,11 +1,16 @@
 // Authentication service for FarmIQ
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 
+  (import.meta.env.PROD 
+    ? 'https://farmiq-backend.onrender.com/api'  // Your actual backend URL
+    : 'http://localhost:3001/api');
 
 export interface User {
   id: number;
   role: 'farmer' | 'vendor' | 'admin';
   name: string;
   username: string;
+  phone?: string;
+  aadhar?: string;
 }
 
 export interface LoginCredentials {

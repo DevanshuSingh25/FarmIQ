@@ -43,7 +43,7 @@ export function FarmIQNavbar({ theme, language, onThemeToggle, onLanguageChange 
   const [activeLink, setActiveLink] = useState<string>('');
   const navigate = useNavigate();
   const location = useLocation();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const [currentLanguage, setCurrentLanguage] = useState<'English' | 'Hindi' | 'Punjabi'>(language);
 
   const navLinks = [
@@ -113,9 +113,16 @@ export function FarmIQNavbar({ theme, language, onThemeToggle, onLanguageChange 
 
             {/* Logo with spacing */}
             <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold text-primary">
-                FarmIQ <span className="text-lg font-normal text-muted-foreground ml-3">Farmer dashboard</span>
-              </h1>
+              <button
+                onClick={() => navigate(`/${user?.role || 'farmer'}/dashboard`)}
+                className="text-2xl font-bold text-primary hover:text-primary/80 transition-colors cursor-pointer"
+              >
+                FarmIQ <span className="text-lg font-normal text-muted-foreground ml-3">
+                  {user?.role === 'farmer' ? 'Farmer' : 
+                   user?.role === 'vendor' ? 'Vendor' : 
+                   user?.role === 'admin' ? 'Admin' : 'User'} dashboard
+                </span>
+              </button>
             </div>
           </div>
 

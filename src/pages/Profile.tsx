@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -6,23 +6,37 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SectionSpeaker } from "@/components/ui/section-speaker";
 import { FarmIQNavbar } from "@/components/farmiq/FarmIQNavbar";
-import { Edit, Save, X, Camera, User, Phone, CreditCard } from "lucide-react";
+import { Edit, Save, X, Camera, User, Phone, CreditCard, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { authService } from "@/services/authService";
+
+interface UserDetails {
+  id: number;
+  role: string;
+  name: string;
+  phone: string;
+  aadhar: string;
+  username: string;
+  created_at: string;
+}
 
 const Profile = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [profileImage, setProfileImage] = useState<string | null>(null);
   
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [language, setLanguage] = useState<'English' | 'Hindi' | 'Punjabi'>('English');
   
   const [formData, setFormData] = useState({
-    name: "Rajesh Kumar",
-    phone: "+91 98765 43210",
-    aadhar: "1234 5678 9012"
+    name: "",
+    phone: "",
+    aadhar: ""
   });
 
   const [editData, setEditData] = useState(formData);
@@ -31,6 +45,20 @@ const Profile = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
     document.documentElement.classList.toggle('dark');
   };
+
+  // Initialize form data from user context
+  useEffect(() => {
+    if (user) {
+      const userData = {
+        name: user.name || "",
+        phone: user.phone || "Not available",
+        aadhar: user.aadhar || "Not available"
+      };
+      setFormData(userData);
+      setEditData(userData);
+      setIsLoading(false);
+    }
+  }, [user]);
 
   const handleEdit = () => {
     setEditData(formData);
@@ -77,6 +105,27 @@ const Profile = () => {
 
   const getText = () => "Farmer Profile. View and edit your personal information including name, phone number, and Aadhar number. Upload a profile photo.";
 
+  if (isLoading || !user) {
+    return (
+      <div className="min-h-screen bg-background">
+        <FarmIQNavbar 
+          theme={theme}
+          language={language}
+          onThemeToggle={toggleTheme}
+          onLanguageChange={setLanguage}
+        />
+        <div className="container mx-auto px-4 py-8 pt-24">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+              <p className="text-muted-foreground">Loading profile...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <FarmIQNavbar 
@@ -100,7 +149,11 @@ const Profile = () => {
 
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-8">
-            <h1 className="text-3xl lg:text-4xl font-bold mb-4">Farmer Profile</h1>
+            <h1 className="text-3xl lg:text-4xl font-bold mb-4">
+              {user?.role === 'farmer' ? 'Farmer' : 
+               user?.role === 'vendor' ? 'Vendor' : 
+               user?.role === 'admin' ? 'Admin' : 'User'} Profile
+            </h1>
             <p className="text-xl text-muted-foreground">
               Manage your personal information and profile settings
             </p>
@@ -238,20 +291,20 @@ const Profile = () => {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-muted-foreground">Member Since</Label>
-                  <p className="text-sm">January 2023</p>
+                  <Label className="text-sm font-medium text-muted-foreground">Username</Label>
+                  <p className="text-sm font-mono">{user?.username || 'N/A'}</p>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-muted-foreground">Total Crops</Label>
-                  <p className="text-sm">4 crops registered</p>
+                  <Label className="text-sm font-medium text-muted-foreground">Role</Label>
+                  <p className="text-sm capitalize">{user?.role || 'N/A'}</p>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-muted-foreground">Location</Label>
-                  <p className="text-sm">Punjab, India</p>
+                  <Label className="text-sm font-medium text-muted-foreground">User ID</Label>
+                  <p className="text-sm font-mono">{user?.id || 'N/A'}</p>
                 </div>
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-muted-foreground">Account Status</Label>
-                  <p className="text-sm text-success">Active</p>
+                  <p className="text-sm text-green-600">Active</p>
                 </div>
               </div>
             </CardContent>

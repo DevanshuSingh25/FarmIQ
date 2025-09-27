@@ -8,11 +8,26 @@ const authHelpers = require('./auth');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware
+// Update CORS for production
+const allowedOrigins = process.env.NODE_ENV === 'production' 
+  ? ['https://farmiq-frontend.onrender.com']  // Replace with your actual frontend URL
+  : ['http://localhost:8080', 'http://localhost:5173'];
+
 app.use(cors({
-  origin: 'http://localhost:8080', // Vite dev server
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, etc.)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
+
+// Middleware (CORS already configured above)
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -117,7 +132,9 @@ app.post('/api/auth/login', async (req, res) => {
         id: user.id,
         role: user.role,
         name: user.name,
-        username: user.username
+        username: user.username,
+        phone: user.phone,
+        aadhar: user.aadhar
       },
       redirectUrl 
     });
@@ -139,7 +156,9 @@ app.get('/api/auth/session', async (req, res) => {
             id: user.id,
             role: user.role,
             name: user.name,
-            username: user.username
+            username: user.username,
+            phone: user.phone,
+            aadhar: user.aadhar
           }
         });
       } else {
@@ -152,6 +171,28 @@ app.get('/api/auth/session', async (req, res) => {
     }
   } catch (error) {
     console.error('Session check error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// Get user details by ID (for profile page)
+app.get('/api/auth/user/:id', requireAuth, async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id);
+    
+    // Ensure user can only access their own data
+    if (req.session.userId !== userId) {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+    
+    const user = await authHelpers.getUserById(userId);
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Get user details error:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
