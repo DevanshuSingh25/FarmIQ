@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3001;
 
 // Update CORS for production
 const allowedOrigins = process.env.NODE_ENV === 'production' 
-  ? ['https://farmiq-frontend.onrender.com']
+  ? ['https://farmiq-frontend.onrender.com', 'https://farmiq-frontend.onrender.com/']
   : ['http://localhost:8080', 'http://localhost:5173'];
 
 app.use(cors({
@@ -18,13 +18,19 @@ app.use(cors({
     // Allow requests with no origin (mobile apps, etc.)
     if (!origin) return callback(null, true);
     
+    // Log the origin for debugging
+    console.log('CORS request from origin:', origin);
+    
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
+      console.log('CORS blocked origin:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
 }));
 
 // Middleware (CORS already configured above)
@@ -68,7 +74,21 @@ const requireRole = (roles) => {
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    cors_origin: req.headers.origin || 'no-origin'
+  });
+});
+
+// Simple test endpoint
+app.get('/api/test', (req, res) => {
+  res.json({ 
+    message: 'Backend is working!',
+    timestamp: new Date().toISOString(),
+    origin: req.headers.origin
+  });
 });
 
 // Authentication routes

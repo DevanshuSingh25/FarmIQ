@@ -4,6 +4,11 @@ const API_BASE_URL = import.meta.env.VITE_API_URL ||
     ? 'https://farmiq-backend.onrender.com/api'
     : 'http://localhost:3001/api');
 
+// Debug logging for production
+console.log('Environment:', import.meta.env.MODE);
+console.log('API Base URL:', API_BASE_URL);
+console.log('VITE_API_URL:', import.meta.env.VITE_API_URL);
+
 export interface User {
   id: number;
   role: 'farmer' | 'vendor' | 'admin';
@@ -56,15 +61,21 @@ class AuthService {
     };
 
     try {
+      console.log('Making request to:', url); // Debug log
       const response = await fetch(url, config);
-      const data = await response.json();
-
+      
+      console.log('Response status:', response.status); // Debug log
+      
       if (!response.ok) {
-        throw new Error(data.message || 'Request failed');
+        const errorText = await response.text();
+        console.error('Request failed:', response.status, errorText);
+        throw new Error(`Request failed: ${response.status} ${errorText}`);
       }
 
+      const data = await response.json();
       return data;
     } catch (error) {
+      console.error('Network error:', error);
       if (error instanceof Error) {
         throw error;
       }
