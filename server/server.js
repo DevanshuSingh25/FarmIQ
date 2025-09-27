@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3001;
 
 // Update CORS for production
 const allowedOrigins = process.env.NODE_ENV === 'production' 
-  ? ['https://farmiq-frontend.onrender.com']  // Replace with your actual frontend URL
+  ? ['https://farmiq-frontend.onrender.com']
   : ['http://localhost:8080', 'http://localhost:5173'];
 
 app.use(cors({
