@@ -29,7 +29,8 @@ import {
   CloudRain,
   TrendingUp,
   Cpu,
-  Home
+  Home,
+  ArrowLeft
 } from "lucide-react";
 
 interface FarmIQNavbarProps {

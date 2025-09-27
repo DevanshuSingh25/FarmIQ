@@ -75,6 +75,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     checkSession();
+    
+    // Set up periodic session check
+    const interval = setInterval(() => {
+      checkSession();
+    }, 5 * 60 * 1000); // Check every 5 minutes
+
+    return () => clearInterval(interval);
   }, []);
 
   const value: AuthContextType = {

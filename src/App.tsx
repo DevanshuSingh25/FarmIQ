@@ -7,6 +7,7 @@ import { ChatbotWidget } from "@/components/ChatbotWidget";
 import { setupMockTTSAPI } from "@/utils/mockTTSApi";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -35,8 +36,9 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AuthProvider>
-          <Routes>
+        <ErrorBoundary>
+          <AuthProvider>
+        <Routes>
             {/* Authentication Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
@@ -67,25 +69,77 @@ const App = () => (
               } 
             />
             
+            {/* Protected Farmer Routes */}
+            <Route 
+              path="/soil-analysis" 
+              element={
+                <ProtectedRoute requiredRole="farmer">
+                  <SoilAnalysis />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/farmer/crop-disease" 
+              element={
+                <ProtectedRoute requiredRole="farmer">
+                  <CropDiseaseDetection />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/farmer/weather" 
+              element={
+                <ProtectedRoute requiredRole="farmer">
+                  <Weather />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/farmer/ngo-schemes" 
+              element={
+                <ProtectedRoute requiredRole="farmer">
+                  <NGOSchemes />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/farmer/teaching" 
+              element={
+                <ProtectedRoute requiredRole="farmer">
+                  <Teaching />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/farmer/qr/generate" 
+              element={
+                <ProtectedRoute requiredRole="farmer">
+                  <QRGeneration />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/profile" 
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              } 
+            />
+            
             {/* Public Routes */}
             <Route path="/" element={<Login />} />
-            <Route path="/old-homepage" element={<Index />} />
-            <Route path="/iot" element={<div className="container mx-auto p-6">IoT page coming soon</div>} />
-            <Route path="/soil-analysis" element={<SoilAnalysis />} />
-            <Route path="/farmer/crop-disease" element={<CropDiseaseDetection />} />
-            <Route path="/farmer/weather" element={<Weather />} />
-            <Route path="/farmer/ngo-schemes" element={<NGOSchemes />} />
-            <Route path="/farmer/teaching" element={<Teaching />} />
-            <Route path="/market-prices" element={<MarketPrices />} />
-            <Route path="/yield-prediction" element={<YieldPrediction />} />
-            <Route path="/farmer/qr/generate" element={<QRGeneration />} />
-            <Route path="/profile" element={<Profile />} />
+          <Route path="/old-homepage" element={<Index />} />
+          <Route path="/iot" element={<div className="container mx-auto p-6">IoT page coming soon</div>} />
+          <Route path="/market-prices" element={<MarketPrices />} />
+          <Route path="/yield-prediction" element={<YieldPrediction />} />
             
             {/* Catch-all route */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <ChatbotWidget />
-        </AuthProvider>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        <ChatbotWidget />
+          </AuthProvider>
+        </ErrorBoundary>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

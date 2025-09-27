@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,16 +8,25 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { SectionSpeaker } from "@/components/ui/section-speaker";
 import { FarmIQNavbar } from "@/components/farmiq/FarmIQNavbar";
-import { Upload, Phone, MapPin, Clock, CheckCircle, Camera, FileText } from "lucide-react";
+import { Upload, Phone, MapPin, Clock, CheckCircle, Camera, FileText, Loader2, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const SoilAnalysis = () => {
   const navigate = useNavigate();
+  const { user, isAuthenticated, isLoading } = useAuth();
   const [analysisMethod, setAnalysisMethod] = useState<"lab" | "self" | null>(null);
   const [labOption, setLabOption] = useState<"pickup" | "delivery" | null>(null);
   
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [language, setLanguage] = useState<'English' | 'Hindi' | 'Punjabi'>('English');
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      navigate('/login');
+    }
+  }, [isAuthenticated, isLoading, navigate]);
 
   const toggleTheme = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
@@ -382,6 +391,23 @@ const SoilAnalysis = () => {
 
   // Self Analysis Flow
   const selfAnalysisGetText = () => "Self Soil Analysis: Provide soil information including crop type, soil type, previous crops, irrigation method, and fertilizers used. Upload a soil image for AI-powered analysis and get instant recommendations.";
+
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render if not authenticated (will redirect)
+  if (!isAuthenticated) {
+    return null;
+  }
   
   return (
     <div className="min-h-screen bg-background">
