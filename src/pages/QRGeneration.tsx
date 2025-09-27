@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SectionSpeaker } from "@/components/ui/section-speaker";
-import { ArrowLeft, QrCode, Download, RefreshCw } from "lucide-react";
+import { FarmIQNavbar } from "@/components/farmiq/FarmIQNavbar";
+import { QrCode, Download, RefreshCw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { getTranslation, getCurrentLanguage } from "@/lib/translations";
@@ -25,6 +26,13 @@ const QRGeneration = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [language, setLanguage] = useState<'English' | 'Hindi' | 'Punjabi'>('English');
+  
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark');
+  };
   
   const [formData, setFormData] = useState({
     cropName: "",
@@ -211,8 +219,15 @@ const QRGeneration = () => {
   const getText = () => getTranslation('qr.page.description', language);
 
   return (
-    <div className="min-h-screen bg-background p-4">
-      <div className="container mx-auto max-w-4xl">
+    <div className="min-h-screen bg-background">
+      <FarmIQNavbar 
+        theme={theme}
+        language={language}
+        onThemeToggle={toggleTheme}
+        onLanguageChange={setLanguage}
+      />
+      
+      <div className="container mx-auto max-w-4xl p-4 pt-24">
         <div className="flex items-center gap-4 mb-8 relative group">
           <div className="absolute top-0 right-0 z-10">
             <SectionSpeaker 
@@ -222,10 +237,6 @@ const QRGeneration = () => {
               alwaysVisible
             />
           </div>
-          <Button variant="ghost" size="sm" onClick={() => navigate("/")}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
-          </Button>
           <h1 className="text-3xl font-bold">{getTranslation('qr.page.title', language)}</h1>
         </div>
 

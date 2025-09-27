@@ -7,13 +7,22 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { SectionSpeaker } from "@/components/ui/section-speaker";
-import { ArrowLeft, Upload, Phone, MapPin, Clock, CheckCircle, Camera, FileText } from "lucide-react";
+import { FarmIQNavbar } from "@/components/farmiq/FarmIQNavbar";
+import { Upload, Phone, MapPin, Clock, CheckCircle, Camera, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const SoilAnalysis = () => {
   const navigate = useNavigate();
   const [analysisMethod, setAnalysisMethod] = useState<"lab" | "self" | null>(null);
   const [labOption, setLabOption] = useState<"pickup" | "delivery" | null>(null);
+  
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [language, setLanguage] = useState<'English' | 'Hindi' | 'Punjabi'>('English');
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark');
+  };
   const [soilImage, setSoilImage] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -87,8 +96,15 @@ const SoilAnalysis = () => {
     const getText = () => "Soil Analysis options: Choose between Lab Testing for professional soil analysis by certified laboratories starting from 250 rupees, or Self Analysis for quick AI-powered analysis using your smartphone, available for free.";
     
     return (
-      <div className="min-h-screen bg-background p-4">
-        <div className="container mx-auto max-w-4xl">
+      <div className="min-h-screen bg-background">
+        <FarmIQNavbar 
+          theme={theme}
+          language={language}
+          onThemeToggle={toggleTheme}
+          onLanguageChange={setLanguage}
+        />
+        
+        <div className="container mx-auto max-w-4xl p-4 pt-24">
           <div className="flex items-center gap-4 mb-8 relative group">
             <div className="absolute top-0 right-0 z-10">
               <SectionSpeaker 
@@ -98,10 +114,6 @@ const SoilAnalysis = () => {
                 alwaysVisible
               />
             </div>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/")}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Home
-            </Button>
             <h1 className="text-3xl font-bold">Soil Analysis</h1>
           </div>
 
@@ -191,8 +203,15 @@ const SoilAnalysis = () => {
     const getText = () => "Lab Testing Service: Choose from certified laboratories including Krishi Soil Testing Lab in Delhi at 300 rupees, AgriTech Labs in Mumbai at 450 rupees, and Bharat Soil Center in Bangalore at 250 rupees. All offer door pickup services and expert consultation.";
     
     return (
-      <div className="min-h-screen bg-background p-4">
-        <div className="container mx-auto max-w-6xl">
+      <div className="min-h-screen bg-background">
+        <FarmIQNavbar 
+          theme={theme}
+          language={language}
+          onThemeToggle={toggleTheme}
+          onLanguageChange={setLanguage}
+        />
+        
+        <div className="container mx-auto max-w-6xl p-4 pt-24">
           <div className="flex items-center gap-4 mb-8 relative group">
             <div className="absolute top-0 right-0 z-10">
               <SectionSpeaker 
@@ -365,8 +384,15 @@ const SoilAnalysis = () => {
   const selfAnalysisGetText = () => "Self Soil Analysis: Provide soil information including crop type, soil type, previous crops, irrigation method, and fertilizers used. Upload a soil image for AI-powered analysis and get instant recommendations.";
   
   return (
-    <div className="min-h-screen bg-background p-4">
-      <div className="container mx-auto max-w-4xl">
+    <div className="min-h-screen bg-background">
+      <FarmIQNavbar 
+        theme={theme}
+        language={language}
+        onThemeToggle={toggleTheme}
+        onLanguageChange={setLanguage}
+      />
+      
+      <div className="container mx-auto max-w-4xl p-4 pt-24">
         <div className="flex items-center gap-4 mb-8 relative group">
           <div className="absolute top-0 right-0 z-10">
             <SectionSpeaker 

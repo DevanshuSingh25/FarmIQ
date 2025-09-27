@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { setLanguage as setGoogleLanguage } from "@/lib/googleTranslate";
 import { getTranslation, getCurrentLanguage } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { 
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { 
   User, 
   Sun, 
@@ -19,7 +20,15 @@ import {
   History,
   Info,
   LogOut,
-  QrCode
+  QrCode,
+  Menu,
+  ChevronRight,
+  FlaskConical,
+  Bug,
+  CloudRain,
+  TrendingUp,
+  Cpu,
+  Home
 } from "lucide-react";
 
 interface FarmIQNavbarProps {
@@ -32,6 +41,7 @@ interface FarmIQNavbarProps {
 export function FarmIQNavbar({ theme, language, onThemeToggle, onLanguageChange }: FarmIQNavbarProps) {
   const [activeLink, setActiveLink] = useState<string>('');
   const navigate = useNavigate();
+  const location = useLocation();
   const [currentLanguage, setCurrentLanguage] = useState<'English' | 'Hindi' | 'Punjabi'>(language);
 
   const navLinks = [
@@ -39,6 +49,15 @@ export function FarmIQNavbar({ theme, language, onThemeToggle, onLanguageChange 
     { label: 'Crop', href: '/farmer/crop-disease' },
     { label: 'Market', href: '/market-prices' },
     { label: 'IoT', href: '#iot' },
+  ];
+
+  const menuItems = [
+    { label: "Dashboard", icon: Home, to: "/" },
+    { label: "Soil analysis", icon: FlaskConical, to: "/soil-analysis" },
+    { label: "Crop disease", icon: Bug, to: "/farmer/crop-disease" },
+    { label: "Weather", icon: CloudRain, to: "/weather" },
+    { label: "Market data", icon: TrendingUp, to: "/market-prices" },
+    { label: "IoT", icon: Cpu, to: "/iot" }
   ];
 
   const languages = ['English', 'Hindi', 'Punjabi'] as const;
@@ -52,12 +71,53 @@ export function FarmIQNavbar({ theme, language, onThemeToggle, onLanguageChange 
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border shadow-soft">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <h1 className="text-2xl font-bold text-primary">FarmIQ</h1>
+          {/* Left side - Burger Menu and Logo */}
+          <div className="flex items-center space-x-6">
+            {/* Burger Menu - Leftmost position */}
+            <div>
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="icon" className="rounded-full shadow-medium">
+                    <Menu className="h-5 w-5" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-80">
+                  <SheetHeader>
+                    <SheetTitle>Navigation</SheetTitle>
+                  </SheetHeader>
+                  <div className="mt-6 space-y-2">
+                    {menuItems.map((item) => {
+                      const Icon = item.icon;
+                      const active = location.pathname === item.to;
+                      return (
+                        <Button
+                          key={item.to}
+                          variant={active ? "default" : "ghost"}
+                          className="w-full justify-between"
+                          onClick={() => navigate(item.to)}
+                        >
+                          <span className="flex items-center gap-3">
+                            <Icon className="h-4 w-4" />
+                            {item.label}
+                          </span>
+                          <ChevronRight className="h-4 w-4 opacity-60" />
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+
+            {/* Logo with spacing */}
+            <div className="flex-shrink-0">
+              <h1 className="text-2xl font-bold text-primary">
+                FarmIQ <span className="text-lg font-normal text-muted-foreground ml-3">Farmer dashboard</span>
+              </h1>
+            </div>
           </div>
 
-          {/* Navigation Links */}
+          {/* Navigation Links - Desktop Only */}
           <div className="hidden md:flex items-center space-x-8">
             {navLinks.map((link) => (
               <button

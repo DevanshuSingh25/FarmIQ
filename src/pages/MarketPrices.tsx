@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { SectionSpeaker } from "@/components/ui/section-speaker";
+import { FarmIQNavbar } from "@/components/farmiq/FarmIQNavbar";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { Download, RefreshCw, Wifi, WifiOff, ArrowLeft, Home } from "lucide-react";
+import { Download, RefreshCw, Wifi, WifiOff, Home } from "lucide-react";
 import { PricesFilters } from "@/components/market/PricesFilters";
 import { PricesTable } from "@/components/market/PricesTable";
 import { marketPricesService, MarketPrice, MarketPriceFilters } from "@/services/marketPricesService";
@@ -24,6 +25,14 @@ export interface SortState {
 const MarketPrices = () => {
   const [prices, setPrices] = useState<MarketPrice[]>([]);
   const [loading, setLoading] = useState(false);
+  
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [language, setLanguage] = useState<'English' | 'Hindi' | 'Punjabi'>('English');
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark');
+  };
   const [filters, setFilters] = useState<MarketPriceFilters>({
     crop: "all",
     state: "all",
@@ -178,6 +187,13 @@ const MarketPrices = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <FarmIQNavbar 
+        theme={theme}
+        language={language}
+        onThemeToggle={toggleTheme}
+        onLanguageChange={setLanguage}
+      />
+      
       {/* Header */}
       <div className="border-b bg-card group relative">
         <div className="absolute top-4 right-4 z-10">
@@ -188,19 +204,10 @@ const MarketPrices = () => {
             alwaysVisible
           />
         </div>
-        <div className="container mx-auto px-4 py-6">
+        <div className="container mx-auto px-4 py-6 pt-24">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <div className="flex items-center gap-4 mb-2">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => navigate('/')}
-                  className="gap-2"
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                  Back to Home
-                </Button>
               </div>
               <h1 className="text-3xl font-bold">Market Prices</h1>
               <p className="text-muted-foreground mt-1">

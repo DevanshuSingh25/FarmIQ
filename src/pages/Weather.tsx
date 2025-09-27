@@ -4,7 +4,8 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { SectionSpeaker } from '@/components/ui/section-speaker';
-import { ChevronLeft, CloudRain, Wifi, WifiOff } from 'lucide-react';
+import { FarmIQNavbar } from '@/components/farmiq/FarmIQNavbar';
+import { CloudRain, Wifi, WifiOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { LocationSelector } from '@/components/weather/LocationSelector';
 import { WeatherCard } from '@/components/weather/WeatherCard';
@@ -26,6 +27,9 @@ import { useToast } from '@/hooks/use-toast';
 const Weather = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [language, setLanguage] = useState<'English' | 'Hindi' | 'Punjabi'>('English');
   
   const [filters, setFilters] = useState<WeatherFilters>({
     location: null,
@@ -50,6 +54,11 @@ const Weather = () => {
     sowingAlerts: true,
     enabled: false
   });
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark');
+  };
 
   // Monitor online status
   useEffect(() => {
@@ -145,6 +154,13 @@ const Weather = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <FarmIQNavbar 
+        theme={theme}
+        language={language}
+        onThemeToggle={toggleTheme}
+        onLanguageChange={setLanguage}
+      />
+      
       {/* Header */}
       <header className="bg-card border-b shadow-soft group relative">
         <div className="absolute top-4 right-4 z-10">
@@ -155,18 +171,8 @@ const Weather = () => {
             alwaysVisible
           />
         </div>
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 py-4 pt-20">
           <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate('/')}
-              className="flex items-center gap-2"
-            >
-              <ChevronLeft className="h-4 w-4" />
-              Back
-            </Button>
-            
             <div className="flex-1">
               <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
                 <CloudRain className="h-6 w-6 text-primary" />
@@ -257,15 +263,26 @@ const Weather = () => {
         {/* Loading State */}
         {loading && (
           <div className="space-y-6">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {Array.from({ length: 7 }).map((_, i) => (
-                <div key={i} className="space-y-3 p-4 border rounded-lg">
-                  <Skeleton className="h-6 w-20" />
-                  <Skeleton className="h-8 w-full" />
-                  <Skeleton className="h-12 w-full" />
-                  <div className="grid grid-cols-2 gap-2">
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-full" />
+                <div key={i} className="relative overflow-hidden rounded-2xl shadow-2xl">
+                  <div className="absolute inset-0 bg-gradient-to-b from-blue-600 via-purple-600 to-orange-500" />
+                  <div className="relative p-6 space-y-4">
+                    <div className="flex justify-between items-start">
+                      <Skeleton className="h-6 w-20 bg-white/20" />
+                      <Skeleton className="h-5 w-16 bg-white/20" />
+                    </div>
+                    <div className="flex justify-center">
+                      <Skeleton className="h-20 w-20 rounded-full bg-white/20" />
+                    </div>
+                    <div className="text-center">
+                      <Skeleton className="h-16 w-24 mx-auto bg-white/20" />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <Skeleton className="h-16 w-full bg-white/20 rounded-lg" />
+                      <Skeleton className="h-16 w-full bg-white/20 rounded-lg" />
+                    </div>
+                    <Skeleton className="h-10 w-full bg-white/20 rounded-lg" />
                   </div>
                 </div>
               ))}
@@ -287,7 +304,7 @@ const Weather = () => {
                 />
               </div>
               <h2 className="text-xl font-semibold text-foreground">7-Day Forecast</h2>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {dailyForecast.map((forecast) => (
                   <WeatherCard
                     key={forecast.date}

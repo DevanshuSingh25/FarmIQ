@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SectionSpeaker } from "@/components/ui/section-speaker";
-import { ArrowLeft, Edit, Save, X, Camera, User, Phone, CreditCard } from "lucide-react";
+import { FarmIQNavbar } from "@/components/farmiq/FarmIQNavbar";
+import { Edit, Save, X, Camera, User, Phone, CreditCard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
@@ -15,6 +16,9 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
   
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [language, setLanguage] = useState<'English' | 'Hindi' | 'Punjabi'>('English');
+  
   const [formData, setFormData] = useState({
     name: "Rajesh Kumar",
     phone: "+91 98765 43210",
@@ -22,6 +26,11 @@ const Profile = () => {
   });
 
   const [editData, setEditData] = useState(formData);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark');
+  };
 
   const handleEdit = () => {
     setEditData(formData);
@@ -70,7 +79,14 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
+      <FarmIQNavbar 
+        theme={theme}
+        language={language}
+        onThemeToggle={toggleTheme}
+        onLanguageChange={setLanguage}
+      />
+      
+      <div className="container mx-auto px-4 py-8 pt-24">
         <div className="flex items-center gap-4 mb-8 relative group">
           <div className="absolute top-0 right-0 z-10">
             <SectionSpeaker 
@@ -80,15 +96,6 @@ const Profile = () => {
               alwaysVisible
             />
           </div>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={() => navigate("/")}
-            className="flex items-center gap-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Home
-          </Button>
         </div>
 
         <div className="max-w-2xl mx-auto">

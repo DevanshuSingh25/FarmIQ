@@ -78,6 +78,8 @@ export default {
         "medium": "var(--shadow-medium)",
         "strong": "var(--shadow-strong)",
         "glow": "var(--shadow-glow)",
+        "2xl": "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+        "3xl": "0 35px 60px -12px rgba(0, 0, 0, 0.3)",
       },
       transitionTimingFunction: {
         "smooth": "var(--transition-smooth)",

@@ -1,25 +1,33 @@
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { ArrowLeft, Play } from "lucide-react";
+import { FarmIQNavbar } from "@/components/farmiq/FarmIQNavbar";
+import { Play } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const Teaching = () => {
   const navigate = useNavigate();
+  
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [language, setLanguage] = useState<'English' | 'Hindi' | 'Punjabi'>('English');
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark');
+  };
 
   return (
     <div className="min-h-screen bg-background">
+      <FarmIQNavbar 
+        theme={theme}
+        language={language}
+        onThemeToggle={toggleTheme}
+        onLanguageChange={setLanguage}
+      />
+      
       <div className="border-b bg-card">
-        <div className="container mx-auto px-4 py-6">
+        <div className="container mx-auto px-4 py-6 pt-24">
           <div className="flex items-center gap-4 mb-4">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => navigate('/')}
-              className="gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Home
-            </Button>
           </div>
           <h1 className="text-3xl font-bold">Know about the website</h1>
           <p className="text-muted-foreground">Add your single YouTube video below.</p>

@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SectionSpeaker } from "@/components/ui/section-speaker";
-import { Search, Building2, Calendar, MapPin, ExternalLink, Phone, FileText, ArrowLeft, Home } from "lucide-react";
+import { FarmIQNavbar } from "@/components/farmiq/FarmIQNavbar";
+import { Search, Building2, Calendar, MapPin, ExternalLink, Phone, FileText, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface NGOScheme {
@@ -88,6 +89,14 @@ const NGOSchemes = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
+  
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [language, setLanguage] = useState<'English' | 'Hindi' | 'Punjabi'>('English');
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark');
+  };
 
   const categories = ['all', 'Irrigation', 'Organic Farming', 'Climate Adaptation', 'Institutional Development'];
   const statuses = ['all', 'Active', 'Upcoming', 'Closed'];
@@ -113,19 +122,17 @@ const NGOSchemes = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <FarmIQNavbar 
+        theme={theme}
+        language={language}
+        onThemeToggle={toggleTheme}
+        onLanguageChange={setLanguage}
+      />
+      
       {/* Header */}
       <div className="border-b bg-card">
-        <div className="container mx-auto px-4 py-6">
+        <div className="container mx-auto px-4 py-6 pt-24">
           <div className="flex items-center gap-4 mb-4">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => navigate('/')}
-              className="gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Home
-            </Button>
           </div>
           <div className="flex items-center gap-3 mb-2">
             <Building2 className="h-8 w-8 text-primary" />

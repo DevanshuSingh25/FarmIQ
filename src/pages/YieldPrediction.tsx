@@ -3,13 +3,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, TrendingUp, BarChart3 } from "lucide-react";
+import { FarmIQNavbar } from "@/components/farmiq/FarmIQNavbar";
+import { TrendingUp, BarChart3 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts";
 import { SectionSpeaker } from "@/components/ui/section-speaker";
 
 const YieldPrediction = () => {
   const navigate = useNavigate();
+
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [language, setLanguage] = useState<'English' | 'Hindi' | 'Punjabi'>('English');
 
   // Form state
   const [formData, setFormData] = useState({
@@ -19,6 +23,11 @@ const YieldPrediction = () => {
     kgProduced: ""
   });
   const [showResults, setShowResults] = useState(false);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark');
+  };
 
   // Supported crops and mock monthly yield data (past year)
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -67,7 +76,14 @@ const YieldPrediction = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
+      <FarmIQNavbar 
+        theme={theme}
+        language={language}
+        onThemeToggle={toggleTheme}
+        onLanguageChange={setLanguage}
+      />
+      
+      <div className="container mx-auto px-4 py-8 pt-24">
         <div className="flex items-center gap-4 mb-8 relative group">
           <div className="absolute top-0 right-0 z-10">
             <SectionSpeaker 
@@ -77,15 +93,6 @@ const YieldPrediction = () => {
               alwaysVisible
             />
           </div>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={() => navigate("/")}
-            className="flex items-center gap-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Home
-          </Button>
         </div>
 
         <div className="max-w-4xl mx-auto">

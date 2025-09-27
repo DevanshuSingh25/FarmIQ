@@ -8,9 +8,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { SectionSpeaker } from "@/components/ui/section-speaker";
+import { FarmIQNavbar } from "@/components/farmiq/FarmIQNavbar";
 import { useToast } from "@/hooks/use-toast";
 import { 
-  ArrowLeft, 
   Upload, 
   Camera, 
   Loader2, 
@@ -39,6 +39,14 @@ const CropDiseaseDetection = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [language, setLanguage] = useState<'English' | 'Hindi' | 'Punjabi'>('English');
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark');
+  };
   const [activeTab, setActiveTab] = useState("detect");
   
   // Form state
@@ -231,8 +239,15 @@ const CropDiseaseDetection = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4">
-      <div className="container mx-auto max-w-6xl">
+    <div className="min-h-screen bg-background">
+      <FarmIQNavbar 
+        theme={theme}
+        language={language}
+        onThemeToggle={toggleTheme}
+        onLanguageChange={setLanguage}
+      />
+      
+      <div className="container mx-auto max-w-6xl p-4 pt-24">
         <div className="flex items-center gap-4 mb-8 group relative">
           <div className="absolute top-0 right-0 z-10">
             <SectionSpeaker 
@@ -242,10 +257,6 @@ const CropDiseaseDetection = () => {
               alwaysVisible
             />
           </div>
-          <Button variant="ghost" size="sm" onClick={() => navigate("/")}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
-          </Button>
           <h1 className="text-3xl font-bold">Crop Disease Detection</h1>
         </div>
 
