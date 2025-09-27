@@ -3,6 +3,7 @@ import { setLanguage as setGoogleLanguage } from "@/lib/googleTranslate";
 import { getTranslation, getCurrentLanguage } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -42,6 +43,7 @@ export function FarmIQNavbar({ theme, language, onThemeToggle, onLanguageChange 
   const [activeLink, setActiveLink] = useState<string>('');
   const navigate = useNavigate();
   const location = useLocation();
+  const { logout } = useAuth();
   const [currentLanguage, setCurrentLanguage] = useState<'English' | 'Hindi' | 'Punjabi'>(language);
 
   const navLinks = [
@@ -52,10 +54,10 @@ export function FarmIQNavbar({ theme, language, onThemeToggle, onLanguageChange 
   ];
 
   const menuItems = [
-    { label: "Dashboard", icon: Home, to: "/" },
+    { label: "Dashboard", icon: Home, to: "/farmer/dashboard" },
     { label: "Soil analysis", icon: FlaskConical, to: "/soil-analysis" },
     { label: "Crop disease", icon: Bug, to: "/farmer/crop-disease" },
-    { label: "Weather", icon: CloudRain, to: "/weather" },
+    { label: "Weather", icon: CloudRain, to: "/farmer/weather" },
     { label: "Market data", icon: TrendingUp, to: "/market-prices" },
     { label: "IoT", icon: Cpu, to: "/iot" }
   ];
@@ -220,7 +222,13 @@ export function FarmIQNavbar({ theme, language, onThemeToggle, onLanguageChange 
                   <Info className="mr-3 h-4 w-4" />
                   Know about the website
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer hover:bg-muted py-3 text-destructive">
+                <DropdownMenuItem 
+                  className="cursor-pointer hover:bg-muted py-3 text-destructive"
+                  onClick={async () => {
+                    await logout();
+                    navigate('/login');
+                  }}
+                >
                   <LogOut className="mr-3 h-4 w-4" />
                   Logout
                 </DropdownMenuItem>
