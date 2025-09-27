@@ -1,7 +1,7 @@
 // Authentication service for FarmIQ
 const API_BASE_URL = import.meta.env.VITE_API_URL || 
   (import.meta.env.PROD 
-    ? 'https://farmiq-backend.onrender.com/api'
+    ? 'https://farm-backend-dqsw.onrender.com/api'
     : 'http://localhost:3001/api');
 
 // Debug logging for production
