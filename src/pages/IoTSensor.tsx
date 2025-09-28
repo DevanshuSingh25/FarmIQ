@@ -12,6 +12,7 @@ import StatusTimeline from '@/components/iot/StatusTimeline';
 import LiveReadings from '@/components/iot/LiveReadings';
 import { iotService } from '@/services/iotService';
 import { useToast } from '@/hooks/use-toast';
+import { TextToSpeech } from '@/components/ui/text-to-speech';
 
 interface InstallationRequest {
   id: string;
@@ -154,7 +155,13 @@ const IoTSensor = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
+          <div className="flex items-center justify-center gap-2">
+            <p className="text-muted-foreground">Loading...</p>
+            <TextToSpeech 
+              text="Loading IoT Sensor page. Please wait while we authenticate and load your data."
+              size="sm"
+            />
+          </div>
         </div>
       </div>
     );
@@ -173,14 +180,20 @@ const IoTSensor = () => {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold flex items-center gap-3">
-                <Cpu className="h-8 w-8 text-primary" />
-                IoT Sensor
-              </h1>
-              <p className="text-muted-foreground mt-2">
-                Request installation, track status, and view farm readings.
-              </p>
+            <div className="flex items-center gap-3">
+              <div>
+                <h1 className="text-3xl font-bold flex items-center gap-3">
+                  <Cpu className="h-8 w-8 text-primary" />
+                  IoT Sensor
+                </h1>
+                <p className="text-muted-foreground mt-2">
+                  Request installation, track status, and view farm readings.
+                </p>
+              </div>
+              <TextToSpeech 
+                text="IoT Sensor page. Request installation, track status, and view farm readings. You can request sensor installation, track your installation status, and view live farm readings once installed."
+                size="default"
+              />
             </div>
             
             {activeRequest && activeRequest.status !== 'cancelled' && (
@@ -204,17 +217,34 @@ const IoTSensor = () => {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="request">Request & Status</TabsTrigger>
-            <TabsTrigger value="readings">Live Readings</TabsTrigger>
-          </TabsList>
+          <div className="flex items-center justify-between mb-4">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="request">Request & Status</TabsTrigger>
+              <TabsTrigger value="readings">Live Readings</TabsTrigger>
+            </TabsList>
+            <div className="ml-4">
+              <TextToSpeech 
+                text={activeTab === 'request' 
+                  ? "Request and Status tab. Here you can submit a new sensor installation request or track the status of your existing request." 
+                  : "Live Readings tab. View real-time data from your installed IoT sensors including soil moisture, temperature, humidity, and light levels."
+                }
+                size="sm"
+              />
+            </div>
+          </div>
 
           <TabsContent value="request" className="mt-6">
             {isLoadingRequest ? (
               <div className="flex items-center justify-center py-12">
                 <div className="text-center">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                  <p className="text-muted-foreground">Loading status...</p>
+                  <div className="flex items-center justify-center gap-2">
+                    <p className="text-muted-foreground">Loading status...</p>
+                    <TextToSpeech 
+                      text="Loading your IoT sensor status. Please wait while we fetch your installation request details."
+                      size="sm"
+                    />
+                  </div>
                 </div>
               </div>
             ) : activeRequest ? (

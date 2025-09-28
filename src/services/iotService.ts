@@ -48,59 +48,10 @@ export interface Alert {
   severity: 'low' | 'medium' | 'high';
 }
 
-// Mock technician data
-const technicians = [
-  { id: 'T1', name: 'Ravi Kumar', phone: '9876543210', activeJobsCount: 2 },
-  { id: 'T2', name: 'Simran Kaur', phone: '9876501234', activeJobsCount: 1 },
-  { id: 'T3', name: 'Arjun Mehta', phone: '9876512345', activeJobsCount: 0 },
-];
-
-// Mock data storage (in real app, this would be in database)
+// Data storage (in real app, this would be in database)
 let mockRequests: InstallationRequest[] = [];
 let mockReadings: Reading[] = [];
 let mockAlerts: Alert[] = [];
-
-// Generate mock readings for the last 24 hours
-const generateMockReadings = (): Reading[] => {
-  const readings: Reading[] = [];
-  const now = new Date();
-  
-  for (let i = 23; i >= 0; i--) {
-    const timestamp = new Date(now.getTime() - i * 60 * 60 * 1000);
-    readings.push({
-      timestamp: timestamp.toISOString(),
-      temperatureC: Math.round((28 + Math.sin(i / 4) * 5 + Math.random() * 2) * 10) / 10,
-      humidityPct: Math.round((65 + Math.cos(i / 3) * 10 + Math.random() * 5)),
-      soilMoisturePct: Math.round((45 + Math.sin(i / 2) * 15 + Math.random() * 10)),
-      lightLevel: i >= 6 && i <= 18 ? 
-        (Math.random() > 0.5 ? 'High' : 'Medium') : 'Low'
-    });
-  }
-  
-  return readings;
-};
-
-// Generate mock alerts
-const generateMockAlerts = (): Alert[] => {
-  return [
-    {
-      id: 'A1',
-      type: 'moisture',
-      message: 'Low moisture detected — consider light irrigation',
-      severity: 'medium'
-    },
-    {
-      id: 'A2',
-      type: 'temperature',
-      message: 'High temperature in afternoon — monitor crop stress',
-      severity: 'low'
-    }
-  ];
-};
-
-// Initialize mock data
-mockReadings = generateMockReadings();
-mockAlerts = generateMockAlerts();
 
 class IoTService {
   private async makeRequest<T>(
@@ -145,12 +96,7 @@ class IoTService {
           const newRequest: InstallationRequest = {
             id: `IOT-2025-${String(mockRequests.length + 1).padStart(6, '0')}`,
             ...requestData,
-            status: 'allocated',
-            technician: this.allocateTechnician(),
-            appointment: {
-              date: requestData.preferredDate,
-              window: requestData.preferredWindow
-            },
+            status: 'requested',
             createdAt: new Date().toISOString()
           };
           mockRequests = [newRequest];
@@ -186,23 +132,6 @@ class IoTService {
     }
     
     return null;
-  }
-
-  private allocateTechnician() {
-    // Find technician with lowest active job count
-    const technician = technicians.reduce((min, tech) => 
-      tech.activeJobsCount < min.activeJobsCount ? tech : min
-    );
-    
-    // Increment their active job count
-    technician.activeJobsCount++;
-    
-    return {
-      id: technician.id,
-      name: technician.name,
-      phone: technician.phone,
-      rating: 4.5
-    };
   }
 
   async createRequest(requestData: Partial<InstallationRequest>): Promise<InstallationRequest> {

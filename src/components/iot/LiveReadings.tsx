@@ -8,6 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { RefreshCw, Thermometer, Droplets, Sun, Eye, AlertTriangle, Wifi, WifiOff, Settings } from 'lucide-react';
 import { iotService, Reading, Alert } from '@/services/iotService';
 import { useToast } from '@/hooks/use-toast';
+import { TextToSpeech } from '@/components/ui/text-to-speech';
 
 interface LiveReadingsProps {
   isInstalled: boolean;
@@ -175,11 +176,17 @@ export default function LiveReadings({ isInstalled }: LiveReadingsProps) {
 
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold">Live Farm Readings</h2>
-          <p className="text-muted-foreground">
-            Real-time monitoring of your farm conditions
-          </p>
+        <div className="flex items-center gap-3">
+          <div>
+            <h2 className="text-2xl font-bold">Live Farm Readings</h2>
+            <p className="text-muted-foreground">
+              Real-time monitoring of your farm conditions
+            </p>
+          </div>
+          <TextToSpeech 
+            text="Live Farm Readings. Real-time monitoring of your farm conditions. Current readings: Soil moisture, Temperature, Humidity, and Light level."
+            size="default"
+          />
         </div>
         <div className="flex items-center gap-2">
           {lastUpdated && (
@@ -207,6 +214,10 @@ export default function LiveReadings({ isInstalled }: LiveReadingsProps) {
               <div className="flex items-center gap-2">
                 <Droplets className="h-5 w-5 text-blue-600" />
                 <span className="text-sm font-medium">Soil Moisture</span>
+                <TextToSpeech 
+                  text={`Soil moisture is ${currentReading?.soilMoisturePct || 0} percent`}
+                  size="sm"
+                />
               </div>
               <Badge variant="secondary">{currentReading?.soilMoisturePct || 0}%</Badge>
             </div>
@@ -237,6 +248,10 @@ export default function LiveReadings({ isInstalled }: LiveReadingsProps) {
               <div className="flex items-center gap-2">
                 <Thermometer className="h-5 w-5 text-red-600" />
                 <span className="text-sm font-medium">Temperature</span>
+                <TextToSpeech 
+                  text={`Temperature is ${convertTemperature(currentReading?.temperatureC || 0)} degrees ${settings.temperatureUnit === 'F' ? 'Fahrenheit' : 'Celsius'}`}
+                  size="sm"
+                />
               </div>
               <Badge variant="secondary">
                 {convertTemperature(currentReading?.temperatureC || 0)}{getTemperatureUnit()}
@@ -269,6 +284,10 @@ export default function LiveReadings({ isInstalled }: LiveReadingsProps) {
               <div className="flex items-center gap-2">
                 <Eye className="h-5 w-5 text-green-600" />
                 <span className="text-sm font-medium">Humidity</span>
+                <TextToSpeech 
+                  text={`Humidity is ${currentReading?.humidityPct || 0} percent`}
+                  size="sm"
+                />
               </div>
               <Badge variant="secondary">{currentReading?.humidityPct || 0}%</Badge>
             </div>
@@ -299,6 +318,10 @@ export default function LiveReadings({ isInstalled }: LiveReadingsProps) {
               <div className="flex items-center gap-2">
                 <Sun className="h-5 w-5 text-yellow-600" />
                 <span className="text-sm font-medium">Light Level</span>
+                <TextToSpeech 
+                  text={`Light level is ${currentReading?.lightLevel || 'Low'}`}
+                  size="sm"
+                />
               </div>
               <Badge variant="secondary" className={getLightLevelColor(currentReading?.lightLevel || 'Low')}>
                 {currentReading?.lightLevel || 'Low'}
