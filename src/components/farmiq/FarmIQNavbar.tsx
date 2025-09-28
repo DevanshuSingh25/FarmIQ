@@ -51,7 +51,7 @@ export function FarmIQNavbar({ theme, language, onThemeToggle, onLanguageChange 
     { label: 'Soil', href: '/soil-analysis' },
     { label: 'Crop', href: '/farmer/crop-disease' },
     { label: 'Market', href: '/market-prices' },
-    { label: 'IoT', href: '#iot' },
+    { label: 'IoT', href: '/farmer/iot' },
   ];
 
   const menuItems = [
@@ -60,7 +60,7 @@ export function FarmIQNavbar({ theme, language, onThemeToggle, onLanguageChange 
     { label: "Crop disease", icon: Bug, to: "/farmer/crop-disease" },
     { label: "Weather", icon: CloudRain, to: "/farmer/weather" },
     { label: "Market data", icon: TrendingUp, to: "/market-prices" },
-    { label: "IoT", icon: Cpu, to: "/iot" }
+    { label: "IoT Sensor", icon: Cpu, to: "/farmer/iot" }
   ];
 
   const languages = ['English', 'Hindi', 'Punjabi'] as const;

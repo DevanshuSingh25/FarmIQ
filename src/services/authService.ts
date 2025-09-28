@@ -62,9 +62,12 @@ class AuthService {
 
     try {
       console.log('Making request to:', url); // Debug log
+      console.log('Request config:', config); // Debug log
+      
       const response = await fetch(url, config);
       
       console.log('Response status:', response.status); // Debug log
+      console.log('Response headers:', response.headers); // Debug log
       
       if (!response.ok) {
         const errorText = await response.text();
@@ -73,13 +76,21 @@ class AuthService {
       }
 
       const data = await response.json();
+      console.log('Response data:', data); // Debug log
       return data;
     } catch (error) {
-      console.error('Network error:', error);
+      console.error('Network error details:', error);
+      console.error('Error name:', error instanceof Error ? error.name : 'Unknown');
+      console.error('Error message:', error instanceof Error ? error.message : 'Unknown');
+      
       if (error instanceof Error) {
+        // Provide more specific error messages
+        if (error.message.includes('Failed to fetch')) {
+          throw new Error('Cannot connect to server. Please check if the backend is running.');
+        }
         throw error;
       }
-      throw new Error('Network error');
+      throw new Error('Network error: Unable to connect to server');
     }
   }
 

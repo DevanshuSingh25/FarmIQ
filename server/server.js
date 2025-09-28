@@ -15,17 +15,23 @@ const allowedOrigins = process.env.NODE_ENV === 'production'
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (mobile apps, etc.)
-    if (!origin) return callback(null, true);
-    
     // Log the origin for debugging
     console.log('CORS request from origin:', origin);
     
-    if (allowedOrigins.indexOf(origin) !== -1) {
+    // Temporarily allow all origins for debugging
+    if (process.env.NODE_ENV === 'production') {
+      // In production, allow all origins temporarily
       callback(null, true);
     } else {
-      console.log('CORS blocked origin:', origin);
-      callback(new Error('Not allowed by CORS'));
+      // In development, use strict CORS
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        console.log('CORS blocked origin:', origin);
+        callback(new Error('Not allowed by CORS'));
+      }
     }
   },
   credentials: true,
@@ -240,6 +246,212 @@ app.get('/api/vendor/dashboard', requireAuth, requireRole(['vendor']), (req, res
 
 app.get('/api/admin/dashboard', requireAuth, requireRole(['admin']), (req, res) => {
   res.json({ message: 'Admin dashboard data' });
+});
+
+// IoT Sensor API endpoints
+// Mock technician data
+const technicians = [
+  { id: 'T1', name: 'Ravi Kumar', phone: '9876543210', activeJobsCount: 2 },
+  { id: 'T2', name: 'Simran Kaur', phone: '9876501234', activeJobsCount: 1 },
+  { id: 'T3', name: 'Arjun Mehta', phone: '9876512345', activeJobsCount: 0 },
+];
+
+// Mock data storage (in production, this would be in database)
+let mockRequests = [];
+let mockReadings = [];
+let mockAlerts = [];
+
+// Generate mock readings for the last 24 hours
+const generateMockReadings = () => {
+  const readings = [];
+  const now = new Date();
+  
+  for (let i = 23; i >= 0; i--) {
+    const timestamp = new Date(now.getTime() - i * 60 * 60 * 1000);
+    readings.push({
+      timestamp: timestamp.toISOString(),
+      temperatureC: Math.round((28 + Math.sin(i / 4) * 5 + Math.random() * 2) * 10) / 10,
+      humidityPct: Math.round((65 + Math.cos(i / 3) * 10 + Math.random() * 5)),
+      soilMoisturePct: Math.round((45 + Math.sin(i / 2) * 15 + Math.random() * 10)),
+      lightLevel: i >= 6 && i <= 18 ? 
+        (Math.random() > 0.5 ? 'High' : 'Medium') : 'Low'
+    });
+  }
+  
+  return readings;
+};
+
+// Generate mock alerts
+const generateMockAlerts = () => {
+  return [
+    {
+      id: 'A1',
+      type: 'moisture',
+      message: 'Low moisture detected — consider light irrigation',
+      severity: 'medium'
+    },
+    {
+      id: 'A2',
+      type: 'temperature',
+      message: 'High temperature in afternoon — monitor crop stress',
+      severity: 'low'
+    }
+  ];
+};
+
+// Initialize mock data
+mockReadings = generateMockReadings();
+mockAlerts = generateMockAlerts();
+
+// Allocate technician (mock logic)
+const allocateTechnician = () => {
+  const technician = technicians.reduce((min, tech) => 
+    tech.activeJobsCount < min.activeJobsCount ? tech : min
+  );
+  
+  technician.activeJobsCount++;
+  
+  return {
+    id: technician.id,
+    name: technician.name,
+    phone: technician.phone,
+    rating: 4.5
+  };
+};
+
+// GET /api/iot/status - Get current installation request status
+app.get('/api/iot/status', (req, res) => {
+  try {
+    const activeRequest = mockRequests.length > 0 ? mockRequests[0] : null;
+    res.json(activeRequest);
+  } catch (error) {
+    console.error('Error getting IoT status:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// POST /api/iot/request - Create new installation request
+app.post('/api/iot/request', (req, res) => {
+  try {
+    const requestData = req.body;
+    
+    // Validate required fields
+    if (!requestData.farmerName || !requestData.phone || !requestData.preferredDate || !requestData.preferredWindow) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+    
+    // Create new request
+    const newRequest = {
+      id: `IOT-2025-${String(mockRequests.length + 1).padStart(6, '0')}`,
+      ...requestData,
+      status: 'allocated',
+      technician: allocateTechnician(),
+      appointment: {
+        date: requestData.preferredDate,
+        window: requestData.preferredWindow
+      },
+      createdAt: new Date().toISOString()
+    };
+    
+    // Store request (replace existing if any)
+    mockRequests = [newRequest];
+    
+    res.json(newRequest);
+  } catch (error) {
+    console.error('Error creating IoT request:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// POST /api/iot/reschedule - Reschedule appointment
+app.post('/api/iot/reschedule', (req, res) => {
+  try {
+    const { id, newDate, newWindow } = req.body;
+    
+    if (!id || !newDate || !newWindow) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+    
+    const request = mockRequests.find(r => r.id === id);
+    if (!request) {
+      return res.status(404).json({ error: 'Request not found' });
+    }
+    
+    request.appointment = { date: newDate, window: newWindow };
+    request.status = 'scheduled';
+    
+    res.json(request);
+  } catch (error) {
+    console.error('Error rescheduling IoT request:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// POST /api/iot/cancel - Cancel request
+app.post('/api/iot/cancel', (req, res) => {
+  try {
+    const { id } = req.body;
+    
+    if (!id) {
+      return res.status(400).json({ error: 'Missing request ID' });
+    }
+    
+    mockRequests = mockRequests.filter(r => r.id !== id);
+    res.json({ ok: true });
+  } catch (error) {
+    console.error('Error cancelling IoT request:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// GET /api/iot/readings - Get sensor readings
+app.get('/api/iot/readings', (req, res) => {
+  try {
+    const since = req.query.since;
+    let readings = mockReadings;
+    
+    if (since) {
+      const sinceDate = new Date(since);
+      readings = mockReadings.filter(r => new Date(r.timestamp) >= sinceDate);
+    }
+    
+    res.json(readings);
+  } catch (error) {
+    console.error('Error getting IoT readings:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// GET /api/iot/alerts - Get farm alerts
+app.get('/api/iot/alerts', (req, res) => {
+  try {
+    res.json(mockAlerts);
+  } catch (error) {
+    console.error('Error getting IoT alerts:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// POST /api/iot/mark-installed - Mark sensor as installed (for testing)
+app.post('/api/iot/mark-installed', (req, res) => {
+  try {
+    const { id } = req.body;
+    
+    if (!id) {
+      return res.status(400).json({ error: 'Missing request ID' });
+    }
+    
+    const request = mockRequests.find(r => r.id === id);
+    if (!request) {
+      return res.status(404).json({ error: 'Request not found' });
+    }
+    
+    request.status = 'installed';
+    res.json(request);
+  } catch (error) {
+    console.error('Error marking IoT as installed:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 // Error handling middleware

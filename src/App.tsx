@@ -20,6 +20,7 @@ import Teaching from "./pages/Teaching";
 import YieldPrediction from "./pages/YieldPrediction";
 import FarmIQ from "./pages/FarmIQ";
 import QRGeneration from "./pages/QRGeneration";
+import IoTSensor from "./pages/IoTSensor";
 import Profile from "./pages/Profile";
 import VendorDashboard from "./pages/VendorDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -115,6 +116,14 @@ const App = () => (
               element={
                 <ProtectedRoute requiredRole="farmer">
                   <QRGeneration />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/farmer/iot" 
+              element={
+                <ProtectedRoute requiredRole="farmer">
+                  <IoTSensor />
                 </ProtectedRoute>
               } 
             />

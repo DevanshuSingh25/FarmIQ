@@ -411,8 +411,229 @@ export const QR_TRANSLATIONS = {
   }
 };
 
+// Translation keys for IoT Sensor functionality
+export const IOT_TRANSLATIONS = {
+  // Main titles
+  'iot.title': {
+    en: 'IoT Sensor',
+    hi: 'IoT सेंसर',
+    pa: 'IoT ਸੈਂਸਰ'
+  },
+  'iot.subtitle': {
+    en: 'Request installation, track status, and view farm readings',
+    hi: 'स्थापना का अनुरोध करें, स्थिति ट्रैक करें, और फार्म रीडिंग देखें',
+    pa: 'ਇੰਸਟਾਲੇਸ਼ਨ ਦਾ ਬੇਨਤੀ ਕਰੋ, ਸਥਿਤੀ ਟ੍ਰੈਕ ਕਰੋ, ਅਤੇ ਫਾਰਮ ਰੀਡਿੰਗ ਦੇਖੋ'
+  },
+  'iot.requestTitle': {
+    en: 'Request Sensor Installation',
+    hi: 'सेंसर स्थापना का अनुरोध',
+    pa: 'ਸੈਂਸਰ ਇੰਸਟਾਲੇਸ਼ਨ ਦੀ ਬੇਨਤੀ'
+  },
+  'iot.statusTitle': {
+    en: 'Installation Status',
+    hi: 'स्थापना स्थिति',
+    pa: 'ਇੰਸਟਾਲੇਸ਼ਨ ਸਥਿਤੀ'
+  },
+  'iot.readingsTitle': {
+    en: 'Live Farm Readings',
+    hi: 'लाइव फार्म रीडिंग',
+    pa: 'ਲਾਈਵ ਫਾਰਮ ਰੀਡਿੰਗ'
+  },
+  
+  // Form fields
+  'iot.farmerName': {
+    en: 'Farmer Name',
+    hi: 'किसान का नाम',
+    pa: 'ਕਿਸਾਨ ਦਾ ਨਾਮ'
+  },
+  'iot.phone': {
+    en: 'Phone Number',
+    hi: 'फोन नंबर',
+    pa: 'ਫੋਨ ਨੰਬਰ'
+  },
+  'iot.location': {
+    en: 'Farm Location',
+    hi: 'फार्म स्थान',
+    pa: 'ਫਾਰਮ ਟਿਕਾਣਾ'
+  },
+  'iot.preferredDate': {
+    en: 'Preferred Visit Date',
+    hi: 'पसंदीदा यात्रा तिथि',
+    pa: 'ਪਸੰਦੀਦਾ ਯਾਤਰਾ ਤਾਰੀਖ'
+  },
+  'iot.preferredWindow': {
+    en: 'Preferred Time Window',
+    hi: 'पसंदीदा समय विंडो',
+    pa: 'ਪਸੰਦੀਦਾ ਸਮਾਂ ਵਿੰਡੋ'
+  },
+  'iot.notes': {
+    en: 'Notes for Technician',
+    hi: 'तकनीशियन के लिए नोट्स',
+    pa: 'ਟੈਕਨੀਸ਼ੀਅਨ ਲਈ ਨੋਟਸ'
+  },
+  'iot.allowCalls': {
+    en: 'I allow the technician to call me for coordination',
+    hi: 'मैं तकनीशियन को समन्वय के लिए कॉल करने की अनुमति देता हूं',
+    pa: 'ਮੈਂ ਟੈਕਨੀਸ਼ੀਅਨ ਨੂੰ ਤਾਲਮੇਲ ਲਈ ਕਾਲ ਕਰਨ ਦੀ ਇਜਾਜ਼ਤ ਦਿੰਦਾ ਹਾਂ'
+  },
+  
+  // Actions
+  'iot.requestInstallation': {
+    en: 'Request Installation',
+    hi: 'स्थापना का अनुरोध',
+    pa: 'ਇੰਸਟਾਲੇਸ਼ਨ ਦੀ ਬੇਨਤੀ'
+  },
+  'iot.reschedule': {
+    en: 'Reschedule',
+    hi: 'पुनर्निर्धारण',
+    pa: 'ਮੁੜ-ਨਿਰਧਾਰਿਤ'
+  },
+  'iot.cancelRequest': {
+    en: 'Cancel Request',
+    hi: 'अनुरोध रद्द करें',
+    pa: 'ਬੇਨਤੀ ਰੱਦ ਕਰੋ'
+  },
+  'iot.contactSupport': {
+    en: 'Contact Support',
+    hi: 'सहायता से संपर्क करें',
+    pa: 'ਸਹਾਇਤਾ ਨਾਲ ਸੰਪਰਕ ਕਰੋ'
+  },
+  'iot.refresh': {
+    en: 'Refresh',
+    hi: 'रिफ्रेश करें',
+    pa: 'ਰਿਫਰੈਸ਼ ਕਰੋ'
+  },
+  'iot.settings': {
+    en: 'Settings',
+    hi: 'सेटिंग्स',
+    pa: 'ਸੈਟਿੰਗਸ'
+  },
+  
+  // Reading types
+  'iot.soilMoisture': {
+    en: 'Soil Moisture',
+    hi: 'मिट्टी की नमी',
+    pa: 'ਮਿੱਟੀ ਦੀ ਨਮੀ'
+  },
+  'iot.temperature': {
+    en: 'Temperature',
+    hi: 'तापमान',
+    pa: 'ਤਾਪਮਾਨ'
+  },
+  'iot.humidity': {
+    en: 'Humidity',
+    hi: 'आर्द्रता',
+    pa: 'ਨਮੀ'
+  },
+  'iot.lightLevel': {
+    en: 'Light Level',
+    hi: 'प्रकाश स्तर',
+    pa: 'ਰੌਸ਼ਨੀ ਦਾ ਪੱਧਰ'
+  },
+  
+  // Status messages
+  'iot.sensorActive': {
+    en: 'Your sensor is active!',
+    hi: 'आपका सेंसर सक्रिय है!',
+    pa: 'ਤੁਹਾਡਾ ਸੈਂਸਰ ਸਰਗਰਮ ਹੈ!'
+  },
+  'iot.sensorInactive': {
+    en: "Sensor isn't active yet",
+    hi: 'सेंसर अभी तक सक्रिय नहीं है',
+    pa: 'ਸੈਂਸਰ ਅਜੇ ਸਰਗਰਮ ਨਹੀਂ ਹੈ'
+  },
+  'iot.offlineMessage': {
+    en: "You're offline. Showing last saved readings.",
+    hi: 'आप ऑफलाइन हैं। अंतिम सहेजे गए रीडिंग दिखाए जा रहे हैं।',
+    pa: 'ਤੁਸੀਂ ਔਫਲਾਈਨ ਹੋ। ਅੰਤਿਮ ਸੇਵ ਕੀਤੇ ਗਏ ਰੀਡਿੰਗ ਦਿਖਾਏ ਜਾ ਰਹੇ ਹਨ।'
+  },
+  
+  // Time windows
+  'iot.morning': {
+    en: 'Morning (8:00 AM - 11:00 AM)',
+    hi: 'सुबह (8:00 AM - 11:00 AM)',
+    pa: 'ਸਵੇਰ (8:00 AM - 11:00 AM)'
+  },
+  'iot.afternoon': {
+    en: 'Afternoon (12:00 PM - 3:00 PM)',
+    hi: 'दोपहर (12:00 PM - 3:00 PM)',
+    pa: 'ਦੁਪਹਿਰ (12:00 PM - 3:00 PM)'
+  },
+  'iot.evening': {
+    en: 'Evening (3:00 PM - 6:00 PM)',
+    hi: 'शाम (3:00 PM - 6:00 PM)',
+    pa: 'ਸ਼ਾਮ (3:00 PM - 6:00 PM)'
+  },
+  
+  // Success messages
+  'iot.requestSubmitted': {
+    en: 'Request submitted. Technician allocated.',
+    hi: 'अनुरोध सबमिट किया गया। तकनीशियन आवंटित किया गया।',
+    pa: 'ਬੇਨਤੀ ਸਬਮਿਟ ਕੀਤੀ ਗਈ। ਟੈਕਨੀਸ਼ੀਅਨ ਆਵੰਟਿਤ ਕੀਤਾ ਗਿਆ।'
+  },
+  'iot.appointmentRescheduled': {
+    en: 'Appointment rescheduled successfully.',
+    hi: 'अपॉइंटमेंट सफलतापूर्वक पुनर्निर्धारित किया गया।',
+    pa: 'ਅਪਾਇੰਟਮੈਂਟ ਸਫਲਤਾਪੂਰਵਕ ਮੁੜ-ਨਿਰਧਾਰਿਤ ਕੀਤਾ ਗਿਆ।'
+  },
+  'iot.requestCancelled': {
+    en: 'Request cancelled successfully.',
+    hi: 'अनुरोध सफलतापूर्वक रद्द किया गया।',
+    pa: 'ਬੇਨਤੀ ਸਫਲਤਾਪੂਰਵਕ ਰੱਦ ਕੀਤੀ ਗਈ।'
+  },
+  'iot.settingsSaved': {
+    en: 'Settings saved successfully.',
+    hi: 'सेटिंग्स सफलतापूर्वक सेव की गईं।',
+    pa: 'ਸੈਟਿੰਗਸ ਸਫਲਤਾਪੂਰਵਕ ਸੇਵ ਕੀਤੀਆਂ ਗਈਆਂ।'
+  },
+  
+  // Validation messages
+  'iot.validationError': {
+    en: 'Please check all required fields',
+    hi: 'कृपया सभी आवश्यक फील्ड जांचें',
+    pa: 'ਕਿਰਪਾ ਕਰਕੇ ਸਾਰੇ ਲੋੜੀਂਦੇ ਫੀਲਡ ਚੈਕ ਕਰੋ'
+  },
+  'iot.locationError': {
+    en: 'Could not access location. Please fill address manually.',
+    hi: 'स्थान तक पहुंच नहीं बन सकी। कृपया पता मैन्युअल रूप से भरें।',
+    pa: 'ਟਿਕਾਣੇ ਤੱਕ ਪਹੁੰਚ ਨਹੀਂ ਬਣ ਸਕੀ। ਕਿਰਪਾ ਕਰਕੇ ਪਤਾ ਹੱਥੀਂ ਭਰੋ।'
+  },
+  'iot.messageRequired': {
+    en: 'Please enter your message',
+    hi: 'कृपया अपना संदेश दर्ज करें',
+    pa: 'ਕਿਰਪਾ ਕਰਕੇ ਆਪਣਾ ਸੁਨੇਹਾ ਦਰਜ ਕਰੋ'
+  },
+  
+  // Loading states
+  'iot.loading': {
+    en: 'Loading...',
+    hi: 'लोड हो रहा है...',
+    pa: 'ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...'
+  },
+  'iot.submittingRequest': {
+    en: 'Submitting Request...',
+    hi: 'अनुरोध सबमिट हो रहा है...',
+    pa: 'ਬੇਨਤੀ ਸਬਮਿਟ ਹੋ ਰਹੀ ਹੈ...'
+  },
+  'iot.cancelling': {
+    en: 'Cancelling...',
+    hi: 'रद्द हो रहा है...',
+    pa: 'ਰੱਦ ਹੋ ਰਿਹਾ ਹੈ...'
+  },
+  'iot.gettingLocation': {
+    en: 'Getting Location...',
+    hi: 'स्थान प्राप्त हो रहा है...',
+    pa: 'ਟਿਕਾਣਾ ਪ੍ਰਾਪਤ ਹੋ ਰਿਹਾ ਹੈ...'
+  },
+  'iot.refreshing': {
+    en: 'Refreshing...',
+    hi: 'रिफ्रेश हो रहा है...',
+    pa: 'ਰਿਫਰੈਸ਼ ਹੋ ਰਿਹਾ ਹੈ...'
+  }
+};
+
 // Helper function to get translation
-export function getTranslation(key: keyof typeof AUTH_TRANSLATIONS | keyof typeof QR_TRANSLATIONS, language: 'English' | 'Hindi' | 'Punjabi' = 'English'): string {
+export function getTranslation(key: keyof typeof AUTH_TRANSLATIONS | keyof typeof QR_TRANSLATIONS | keyof typeof IOT_TRANSLATIONS, language: 'English' | 'Hindi' | 'Punjabi' = 'English'): string {
   const langCode = language === 'English' ? 'en' : language === 'Hindi' ? 'hi' : 'pa';
   
   // Check if key exists in AUTH_TRANSLATIONS
@@ -423,6 +644,11 @@ export function getTranslation(key: keyof typeof AUTH_TRANSLATIONS | keyof typeo
   // Check if key exists in QR_TRANSLATIONS
   if (key in QR_TRANSLATIONS) {
     return QR_TRANSLATIONS[key as keyof typeof QR_TRANSLATIONS][langCode] || QR_TRANSLATIONS[key as keyof typeof QR_TRANSLATIONS].en;
+  }
+  
+  // Check if key exists in IOT_TRANSLATIONS
+  if (key in IOT_TRANSLATIONS) {
+    return IOT_TRANSLATIONS[key as keyof typeof IOT_TRANSLATIONS][langCode] || IOT_TRANSLATIONS[key as keyof typeof IOT_TRANSLATIONS].en;
   }
   
   // Fallback to English
